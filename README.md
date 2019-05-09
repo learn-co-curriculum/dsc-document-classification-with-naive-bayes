@@ -9,7 +9,7 @@ In this lesson you'll investigate another implementation of the Bayesian framewo
 
 You will be able to:  
 
-* Implement document classification using naive bayes
+* Implement document classification using naive Bayes
 * Understand the need for the Laplacian smoothing correction
 * Explain how to code a bag of words representation
 
@@ -19,7 +19,7 @@ A common example of using Bayes' theorem to classify documents is a spam filteri
 
 Recall Bayes Theorem:
 
-## $$ P(A|B) = \dfrac{P(B|A)P(A)}{P(B)}$$
+ $$ \large  P(A|B) = \dfrac{P(B|A)P(A)}{P(B)}$$
 
 Applied to a document, one common implementation of Bayes' theorem is to use a bag of words representation. A bag of words representation takes a text document and converts it into a word frequency representation. For example, in a bag of words representation, the message:
 
