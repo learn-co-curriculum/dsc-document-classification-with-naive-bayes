@@ -82,7 +82,7 @@ bag
 Additional preprocessing techniques can also be applied to the document before applying a bag of words representation, many of which you'll explore later when further investigating NLP techniques. 
 
 
-Once you've converted to document into a bag of words representation, you can then implement Bayes' Theorem.
+Once you've converted the document into a bag of words representation, you can then implement Bayes' Theorem.
 Returning to the case of 'Spam' and 'Not Spam', you would have:
 
  $$ P(\text{Spam | Word}) = \dfrac{P(\text{Word | Spam})P(\text{Spam})}{P(\text{Word})}$$  
