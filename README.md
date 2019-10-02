@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this lesson you'll investigate another implementation of the Bayesian framework in order to classify youtube videos into the appropriate topic. The dataset you'll be investigating again come from kaggle. For further information, you can check out the original dataset here: https://www.kaggle.com/extralime/math-lectures
+In this lesson, you'll investigate another implementation of the Bayesian framework in order to classify youtube videos into the appropriate topic. The dataset you'll be investigating again comes from kaggle. For further information, you can check out the original dataset here: https://www.kaggle.com/extralime/math-lectures
 
 ## Objectives
 
@@ -23,13 +23,13 @@ Recall Bayes Theorem:
 
 Applied to a document, one common implementation of Bayes' theorem is to use a bag of words representation. A bag of words representation takes a text document and converts it into a word frequency representation. For example, in a bag of words representation, the message:
 
-> "Thomas Bayes was born in the early 1700s, although his exact date of birth is unknown. As a Presbyterian in England, he took an unconventional approach to eduction for his day since Oxford and Cambridge were tied to the Church of England."
+> "Thomas Bayes was born in the early 1700s, although his exact date of birth is unknown. As a Presbyterian in England, he took an unconventional approach to education for his day since Oxford and Cambridge were tied to the Church of England."
 
 Would look like this:
 
 
 ```python
-doc = "Thomas Bayes was born in the early 1700s, although his exact date of birth is unknown. As a Presbyterian in England, he took an unconventional approach to eduction for his day since Oxford and Cambridge were tied to the Church of England."
+doc = "Thomas Bayes was born in the early 1700s, although his exact date of birth is unknown. As a Presbyterian in England, he took an unconventional approach to education for his day since Oxford and Cambridge were tied to the Church of England."
 bag = {}
 for word in doc.split():
     bag[word] = bag.get(word, 0) + 1 #Get the previous entry, or 0 if not yet documented; add 1
@@ -91,7 +91,7 @@ Using the bag of words representation, you can then define $P(\text{Word | Spam}
 
  $$P(\text{Word | Spam}) = \dfrac{\text{Word Frequency in Document}}{\text{Word Frequency Across All Spam Documents}}$$  
 
-However, this formulation has a problem: what if you encounter a word in the test set that was not present in the training set? This new word would have frequency of zero! This would commit two grave sins. First, there would be a division by zero error. Secondly, the numerator would also be zero; if you were to simply modify the denominator, having a term with zero probability would cause the probability for the entire document to also be zero when you subsequently multiplied the conditional probabilities in Multinomial Bayes. To effectively counteract these issues, Laplacian smoothing is often used giving  
+However, this formulation has a problem: what if you encounter a word in the test set that was not present in the training set? This new word would have a frequency of zero! This would commit two grave sins. First, there would be a division by zero error. Secondly, the numerator would also be zero; if you were to simply modify the denominator, having a term with zero probability would cause the probability for the entire document to also be zero when you subsequently multiplied the conditional probabilities in Multinomial Bayes. To effectively counteract these issues, Laplacian smoothing is often used giving  
 
  $$P(\text{Word | Spam}) = \dfrac{\text{Word Frequency in Document} + 1}{\text{Word Frequency Across All Spam Documents + Number of Words in Corpus Vocabulary}}$$  
 
@@ -418,7 +418,7 @@ residuals.value_counts(normalize=True)
 
 
 
-As you can see, this algorithm leaves a lot to be desired. A measly 49% accuracy is nothing to write home about. (In fact, it's slightly worse then random guessing!) In practice, substantial additional preprocessing including removing stop words and using stemming or lemmatisation would be required. Even then, naive bayes might still not be the optimal algorithm. Nonetheless, it is a worthwhile exercise and a comprehendible algorithm. 
+As you can see, this algorithm leaves a lot to be desired. A measly 49% accuracy is nothing to write home about. (In fact, it's slightly worse than random guessing!) In practice, substantial additional preprocessing including removing stop words and using stemming or lemmatisation would be required. Even then, naive bayes might still not be the optimal algorithm. Nonetheless, it is a worthwhile exercise and a comprehendible algorithm. 
 
 ## Summary
 
