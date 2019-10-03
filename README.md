@@ -9,9 +9,9 @@ In this lesson, you'll investigate another implementation of the Bayesian framew
 
 You will be able to:  
 
-* Implement document classification using naive Bayes
-* Understand the need for the Laplacian smoothing correction
-* Explain how to code a bag of words representation
+- Implement document classification using naive Bayes
+- Understand the need for the Laplacian smoothing correction
+- Explain how to code a bag of words representation
 
 ## Bayes Theorem for Document Classification
 
