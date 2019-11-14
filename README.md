@@ -3,21 +3,21 @@
 
 ## Introduction
 
-In this lesson, you'll investigate another implementation of the Bayesian framework in order to classify youtube videos into the appropriate topic. The dataset you'll be investigating again comes from kaggle. For further information, you can check out the original dataset here: https://www.kaggle.com/extralime/math-lectures
+In this lesson, you'll investigate another implementation of the Bayesian framework in order to classify YouTube videos into the appropriate topic. The dataset you'll be investigating again comes from Kaggle. For further information, you can check out the original dataset here: https://www.kaggle.com/extralime/math-lectures .
 
 ## Objectives
 
 You will be able to:  
 
-- Implement document classification using naive Bayes
-- Understand the need for the Laplacian smoothing correction
+- Implement document classification using Naive Bayes 
 - Explain how to code a bag of words representation
+- Explain why it is necessary to use Laplacian smoothing correction
 
-## Bayes Theorem for Document Classification
+## Bayes theorem for document classification
 
 A common example of using Bayes' theorem to classify documents is a spam filtering algorithm. You'll be exploring this application in the upcoming lab. To do this, you examine the question "given this word (in the document) what is the probability that it is spam versus not spam?" For example, perhaps you get a lot of "special offer" spam. In that case, the words "special" and "offer" may increase the probability that a given message is spam.
 
-Recall Bayes Theorem:
+Recall Bayes theorem:
 
  $$ \large  P(A|B) = \dfrac{P(B|A)P(A)}{P(B)}$$
 
@@ -32,7 +32,8 @@ Would look like this:
 doc = "Thomas Bayes was born in the early 1700s, although his exact date of birth is unknown. As a Presbyterian in England, he took an unconventional approach to education for his day since Oxford and Cambridge were tied to the Church of England."
 bag = {}
 for word in doc.split():
-    bag[word] = bag.get(word, 0) + 1 #Get the previous entry, or 0 if not yet documented; add 1
+    # Get the previous entry, or 0 if not yet documented; add 1
+    bag[word] = bag.get(word, 0) + 1 
 bag
 ```
 
@@ -65,7 +66,7 @@ bag
      'unconventional': 1,
      'approach': 1,
      'to': 2,
-     'eduction': 1,
+     'education': 1,
      'for': 1,
      'day': 1,
      'since': 1,
@@ -79,10 +80,10 @@ bag
 
 
 
-Additional preprocessing techniques can also be applied to the document before applying a bag of words representation, many of which you'll explore later when further investigating NLP techniques. 
+Additional preprocessing techniques can also be applied to the document before applying a bag of words representation, many of which you'll explore later when further investigating Natural Language Processing (NLP) techniques. 
 
 
-Once you've converted the document into a bag of words representation, you can then implement Bayes' Theorem.
+Once you've converted the document into a bag of words representation, you can then implement Bayes' theorem.
 Returning to the case of 'Spam' and 'Not Spam', you would have:
 
  $$ P(\text{Spam | Word}) = \dfrac{P(\text{Word | Spam})P(\text{Spam})}{P(\text{Word})}$$  
@@ -91,13 +92,13 @@ Using the bag of words representation, you can then define $P(\text{Word | Spam}
 
  $$P(\text{Word | Spam}) = \dfrac{\text{Word Frequency in Document}}{\text{Word Frequency Across All Spam Documents}}$$  
 
-However, this formulation has a problem: what if you encounter a word in the test set that was not present in the training set? This new word would have a frequency of zero! This would commit two grave sins. First, there would be a division by zero error. Secondly, the numerator would also be zero; if you were to simply modify the denominator, having a term with zero probability would cause the probability for the entire document to also be zero when you subsequently multiplied the conditional probabilities in Multinomial Bayes. To effectively counteract these issues, Laplacian smoothing is often used giving  
+However, this formulation has a problem: what if you encounter a word in the test set that was not present in the training set? This new word would have a frequency of zero! This would commit two grave sins. First, there would be a division by zero error. Secondly, the numerator would also be zero; if you were to simply modify the denominator, having a term with zero probability would cause the probability for the entire document to also be zero when you subsequently multiplied the conditional probabilities in Multinomial Bayes. To effectively counteract these issues, Laplacian smoothing is often used giving:   
 
  $$P(\text{Word | Spam}) = \dfrac{\text{Word Frequency in Document} + 1}{\text{Word Frequency Across All Spam Documents + Number of Words in Corpus Vocabulary}}$$  
 
-Now, to implement this in python!
+Now, to implement this in Python!
 
-## Loading the Dataset
+## Load the dataset
 
 
 ```python
@@ -165,7 +166,7 @@ df.head()
 
 
 ```python
-df.label.value_counts()
+df['label'].value_counts()
 ```
 
 
@@ -186,14 +187,14 @@ df.label.value_counts()
 
 
 
-## Simple Two Class Case
+## Simple two-class case
 
-To simplify the problem, you can start by subsetting to two specific classes.
+To simplify the problem, you can start by subsetting to two specific classes: 
 
 
 ```python
 df2 = df[df['label'].isin(['Algorithms', 'Statistics'])]
-df2.label.value_counts()
+df2['label'].value_counts()
 ```
 
 
@@ -207,7 +208,7 @@ df2.label.value_counts()
 
 
 ```python
-p_classes = dict(df2.label.value_counts(normalize=True))
+p_classes = dict(df2['label'].value_counts(normalize=True))
 p_classes
 ```
 
@@ -232,13 +233,13 @@ df2.iloc[0]
 
 
 
-## Train - Test Split
+## Train-test split
 
 
 ```python
 from sklearn.model_selection import train_test_split
-X = df2.text
-y = df2.label
+X = df2['text']
+y = df2['label']
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=17)
 train_df = pd.concat([X_train, y_train], axis=1) 
 test_df = pd.concat([X_test, y_test], axis=1)
@@ -248,10 +249,11 @@ test_df = pd.concat([X_test, y_test], axis=1)
 
 
 ```python
-class_word_freq = {} #Will be a nested dictionary of class_i : {word1:freq, word2:freq..., wordn:freq},.... class_m : {}
-classes = train_df.label.unique()
+# Will be a nested dictionary of class_i : {word1:freq, word2:freq..., wordn:freq},.... class_m : {}
+class_word_freq = {} 
+classes = train_df['label'].unique()
 for class_ in classes:
-    temp_df = train_df[train_df.label==class_]
+    temp_df = train_df[train_df.label == class_]
     bag = {}
     for row in temp_df.index:
         doc = temp_df['text'][row]
@@ -260,13 +262,12 @@ for class_ in classes:
     class_word_freq[class_] = bag
 ```
 
-## Count the Total Corpus Words
-
+## Count the total corpus words
 
 
 ```python
 vocabulary = set()
-for text in train_df.text:
+for text in train_df['text']:
     for word in text.split():
         vocabulary.add(word)
 V = len(vocabulary)
@@ -280,7 +281,7 @@ V
 
 
 
-## Create a Bag of Words Function
+## Create a bag of words function
 
 
 ```python
@@ -328,9 +329,9 @@ classify_doc(train_df.iloc[0]['text'], class_word_freq, p_classes, V, return_pos
 
 
 
-## Avoiding Underflow
+## Avoid underflow
 
-As you can see from the output above, repeatedly multiplying small probabilities can lead to underflow; rounding to zero due to numerical approximation limitations. As such, a common alternative is to add the logarithms of the probabilities as opposed to multiplying the raw probabilities themselves. If this is alien to you, it might be worth reviewing some Algebra 2 rules of exponents and logarithms briefly:  
+As you can see from the output above, repeatedly multiplying small probabilities can lead to underflow; rounding to zero due to numerical approximation limitations. As such, a common alternative is to add the logarithms of the probabilities as opposed to multiplying the raw probabilities themselves. If this is alien to you, it might be worth reviewing some algebra rules of exponents and logarithms briefly:  
 
 $ e^x \cdot e^y = e^{x+y}$  
 $ log_{e}(e)=1 $  
@@ -418,8 +419,8 @@ residuals.value_counts(normalize=True)
 
 
 
-As you can see, this algorithm leaves a lot to be desired. A measly 49% accuracy is nothing to write home about. (In fact, it's slightly worse than random guessing!) In practice, substantial additional preprocessing including removing stop words and using stemming or lemmatisation would be required. Even then, naive bayes might still not be the optimal algorithm. Nonetheless, it is a worthwhile exercise and a comprehendible algorithm. 
+As you can see, this algorithm leaves a lot to be desired. A measly 49% accuracy is nothing to write home about. (In fact, it's slightly worse than random guessing!) In practice, substantial additional preprocessing including removing stop words and using stemming or lemmatisation would be required. Even then, Naive Bayes might still not be the optimal algorithm. Nonetheless, it is a worthwhile exercise and a comprehendible algorithm. 
 
 ## Summary
 
-In this lesson, you got to see another application of Bayes' Theorem as a means to do some rough documentation classification.
+In this lesson, you got to see another application of Bayes' theorem as a means to do some rough documentation classification.
